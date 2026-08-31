@@ -1,13 +1,17 @@
 import { useState } from "react";
 
-function Register() {
+type LoginProps = {
+  onLogin: (token: string) => void;
+};
+
+function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const handleSubmit = async (event: React.FormEvent) => {
   event.preventDefault();
 
-  const response = await fetch("http://localhost:8000/api/auth/register", {
+  const response = await fetch("http://localhost:8000/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,17 +25,16 @@ function Register() {
   const data = await response.json();
 
   if (response.ok) {
-    setMessage("Account created successfully!");
-    setEmail("");
-    setPassword("");
-}   else {
-    setMessage(data.detail || "Something went wrong.");
-}
+    setMessage("Login successful!");
+    onLogin(data.access_token);
+  } else {
+    setMessage(data.detail || "Login failed.");
+  }
 };
 
   return (
     <div>
-      <h1>Create your Finflow account</h1>
+      <h1>Log in to Finflow</h1>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -53,12 +56,13 @@ function Register() {
         </div>
 
         <button type="submit">
-          Create Account
+          Log In
         </button>
       </form>
+
       {message && <p>{message}</p>}
     </div>
   );
 }
 
-export default Register;
+export default Login;
