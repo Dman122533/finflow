@@ -1,5 +1,5 @@
 from routers.auth import router as auth_router
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from database import engine, Base
 from models.user import User
 

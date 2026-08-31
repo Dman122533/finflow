@@ -5,6 +5,7 @@ from database import SessionLocal
 from models.user import User
 from schemas.user import UserCreate, UserLogin
 from utils.jwt import create_access_token
+from dependencies.auth import get_current_user
 
 router = APIRouter(
     prefix="/api/auth",
@@ -90,3 +91,12 @@ def login_user(
          "access_token": access_token,
          "token_type": "bearer"
 }
+@router.get("/me")
+def get_me(
+    current_user: User = Depends(get_current_user)
+):
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "created_at": current_user.created_at
+    }
